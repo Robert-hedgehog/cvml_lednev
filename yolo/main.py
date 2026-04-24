@@ -1,9 +1,20 @@
 from ultralytics import YOLO
 import cv2
 import time
+import torch
+
+if torch.cuda.is_available():
+    device = torch.device("cuda")
+    print("Используется устройство: CUDA")
+elif torch.backends.mps.is_available():
+    device = torch.device("mps")
+    print("Используется устройство: MPS (Apple Silicon)")
+else:
+    device = torch.device("cpu")
+    print("Используется устройство: CPU")
 
 model = YOLO("./runs/detect/figures/yolo/weights/best.pt")
-model.to("mps")
+model.to(device)
 camera = cv2.VideoCapture(0)
 
 while camera.isOpened():
